@@ -22,6 +22,7 @@ playerimg = pygame.image.load('spaceship.png')
 playerX = 450
 playerY = 700
 playerX_change = 0
+player_lives = 3
 
 # Enemy
 enemyimg = []
@@ -57,7 +58,6 @@ for i in range(num_of_bullets):
 
 # Score
 score_value = 0
-level_value = 1
 font = pygame.font.Font('freesansbold.ttf', 32)
 textX = 10
 textY = 10
@@ -68,6 +68,7 @@ over_font = pygame.font.Font('freesansbold.ttf', 64)
 # Sound effects
 pygame.mixer.init()
 bullet_sound = pygame.mixer.Sound('bullet.wav')
+#collision_sound = pygame.mixer.Sound('collision.wav')
 game_over_sound = pygame.mixer.Sound('game_over.wav')
 
 def game_over_text():
@@ -80,7 +81,7 @@ def game_over_text():
     pygame.time.delay(4000)  # Pause for 4 seconds after playing game over sound
 
 def show_score(x, y):
-    score = font.render("Score: " + str(score_value) + "   Level: " + str(level_value), True, (255, 255, 255))
+    score = font.render("Score : " + str(score_value), True, (255, 255, 255))
     screen.blit(score, (x, y))
 
 def player(x, y):
@@ -103,8 +104,6 @@ def collision(enemyX, enemyY, bulletX, bulletY):
         return False
 
 def init_level(level):
-    global score_value
-    score_value = 0
     for i in range(num_of_enemies):
         enemyX[i] = random.randint(0, 963)
         enemyY[i] = random.randint(10, 250)
@@ -112,15 +111,9 @@ def init_level(level):
 
 running = True
 current_level = 1
-
 def restart_bullet_sound():
     bullet_sound.stop()
     bullet_sound.play()
-def next_level():
-    global current_level, player_lives
-    current_level += 1
-    player_lives = 3
-    init_level(current_level)
 while running:
     screen.fill((0, 0, 0))
     screen.blit(background, (0, 0))
@@ -140,6 +133,7 @@ while running:
                     bulletX[i] = playerX
                     firebullet(bulletX[i], bulletY[i], i)
                     restart_bullet_sound()  # Restart the bullet sound
+
 
         if event.type == pygame.KEYUP and (event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and event.key != pygame.K_SPACE:
             playerX_change = 0
